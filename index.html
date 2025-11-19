@@ -3,298 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoDaily - The Ultimate Daily Earning Checklist</title>
-    <meta name="description" content="Maximize your crypto earnings with our curated daily checklist of the best faucets, mining simulators, and exchanges. Updated daily.">
+    <title>CryptoDaily | DePIN, AI Nodes & Faucet Tracker</title>
+    <meta name="description" content="The ultimate daily checklist for crypto earnings. Track your progress on DePIN nodes, AI mining, hourly faucets, and airdrop quests.">
+    <meta name="theme-color" content="#0f172a">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        :root {
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.6);
+        }
+        
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: #e2e8f0; background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 70%); }
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Glassmorphism Cards */
         .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .glass-card:hover {
-            transform: translateY(-5px);
-            border-color: #3b82f6;
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 0 15px rgba(59, 130, 246, 0.2);
         }
-        .btn-grad {
-            background-image: linear-gradient(to right, #3b82f6 0%, #8b5cf6 51%, #3b82f6 100%);
-            transition: 0.5s;
-            background-size: 200% auto;
-        }
-        .btn-grad:hover { background-position: right center; }
         
-        /* Checkbox animation */
-        .status-indicator {
-            width: 12px;
-            height: 12px;
+        /* Status Indicators */
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background-color: #ef4444;
-            box-shadow: 0 0 10px #ef4444;
-            transition: all 0.3s ease;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            box-shadow: 0 0 8px currentColor;
         }
-        .visited .status-indicator {
-            background-color: #10b981;
-            box-shadow: 0 0 10px #10b981;
+        .status-pending { color: #ef4444; background-color: #ef4444; }
+        .status-done { color: #10b981; background-color: #10b981; }
+
+        /* Animations */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px #06b6d4; }
+            50% { opacity: 0.7; box-shadow: 0 0 20px #06b6d4; }
         }
-        .visited { opacity: 0.6; filter: grayscale(0.8); }
-        .visited:hover { opacity: 1; filter: grayscale(0); }
+        .animate-pulse-glow { animation: pulse-glow 3s infinite; }
+        
+        .btn-claim {
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            transition: all 0.3s;
+        }
+        .btn-claim:hover { filter: brightness(1.2); letter-spacing: 0.5px; }
+        
+        .btn-visited {
+            background: #1e293b;
+            color: #64748b;
+            cursor: default;
+            border: 1px solid #334155;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
-    <nav class="w-full py-4 border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 backdrop-blur">
+    <div class="fixed inset-0 z-[-1]" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 50px 50px; mask-image: linear-gradient(to bottom, black 40%, transparent 100%);"></div>
+
+    <nav class="w-full py-4 border-b border-white/5 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-coins text-blue-500 text-2xl"></i>
-                <h1 class="text-2xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">CryptoDaily</h1>
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-bolt text-white text-sm"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-white">Crypto<span class="text-blue-400">Daily</span></h1>
             </div>
-            <div class="text-sm text-slate-400 hidden md:block">
-                <i class="fa-regular fa-clock"></i> Resets in: <span id="countdown" class="font-mono text-blue-400"></span>
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex flex-col items-end">
+                    <span class="text-[10px] uppercase tracking-widest text-slate-500">Daily Reset In</span>
+                    <span id="countdown" class="font-mono text-blue-400 text-sm">00:00</span>
+                </div>
+                <button onclick="resetTracker()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-rotate"></i></button>
             </div>
         </div>
     </nav>
 
-    <header class="relative py-20 px-4 text-center overflow-hidden">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[100px] -z-10"></div>
-        <h2 class="text-5xl md:text-6xl font-bold mb-6">Your Daily <br><span class="text-blue-500">Income Routine</span></h2>
-        <p class="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
-            A curated, tracked list of the highest paying crypto faucets, PTC sites, and mining simulators. 
-            Bookmark this page. Complete the list daily. Maximize your earnings.
+    <header class="py-12 px-4 text-center max-w-5xl mx-auto">
+        <h2 class="text-4xl md:text-6xl font-bold mb-4 text-white leading-tight">
+            Monetize Your <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 animate-pulse-glow">Digital Existence</span>
+        </h2>
+        <p class="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
+            Your daily command center for DePIN nodes, AI training, and high-yield faucets. 
+            <span class="text-white font-semibold">Consistency is the only cheat code.</span>
         </p>
-        <div class="flex justify-center gap-4">
-            <button onclick="resetTracker()" class="px-6 py-2 rounded-full border border-slate-600 hover:bg-slate-800 text-sm transition">
-                <i class="fa-solid fa-rotate-right"></i> Reset Checklist
-            </button>
-            <a href="#guide" class="px-6 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-sm transition">
-                <i class="fa-solid fa-book"></i> Strategy Guide
-            </a>
+        
+        <div class="max-w-xl mx-auto bg-slate-800/50 rounded-full h-2 overflow-hidden relative mb-2">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 w-0 transition-all duration-700 ease-out"></div>
+        </div>
+        <div class="flex justify-between max-w-xl mx-auto text-xs text-slate-500 font-mono">
+            <span>0% COMPLETED</span>
+            <span id="progressText">0/0 TASKS</span>
         </div>
     </header>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 pb-20 w-full">
-        
-        <div class="mb-10 bg-slate-800 rounded-full h-4 w-full max-w-3xl mx-auto overflow-hidden relative group">
-            <div id="progressBar" class="h-full bg-gradient-to-r from-blue-500 to-purple-600 w-0 transition-all duration-500"></div>
-            <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center text-[10px] font-bold tracking-widest opacity-0 group-hover:opacity-100 transition">
-                DAILY PROGRESS
+    <main class="flex-grow max-w-7xl mx-auto px-4 pb-24 w-full space-y-16">
+
+        <section>
+            <div class="flex items-center gap-3 mb-6 border-b border-cyan-500/30 pb-4">
+                <i class="fa-solid fa-network-wired text-cyan-400 text-xl"></i>
+                <h3 class="text-2xl font-bold text-white">DePIN & AI Nodes <span class="text-xs bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded ml-2 border border-cyan-500/20">PASSIVE INCOME</span></h3>
             </div>
-        </div>
-
-        <div class="mb-12">
-            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 border-l-4 border-yellow-500 pl-4">
-                <span class="text-yellow-500"><i class="fa-solid fa-star"></i></span> High Priority / Essentials
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="cat-essentials">
+            <p class="text-slate-400 text-sm mb-6">Install these extensions/nodes once. Open them daily to ensure they are connected and earning.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="cat-depin">
                 </div>
-        </div>
+        </section>
 
-        <div class="mb-12">
-            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 border-l-4 border-blue-500 pl-4">
-                <span class="text-blue-500"><i class="fa-solid fa-hourglass-half"></i></span> Hourly Claims (Quick)
-            </h3>
-            <p class="text-slate-400 text-sm mb-4">These sites allow claims every hour. Open them all in tabs and cycle through.</p>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="cat-hourly">
+        <section>
+            <div class="flex items-center gap-3 mb-6 border-b border-yellow-500/30 pb-4">
+                <i class="fa-solid fa-star text-yellow-400 text-xl"></i>
+                <h3 class="text-2xl font-bold text-white">Daily Essentials</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="cat-essentials">
                 </div>
-        </div>
+        </section>
 
-        <div class="mb-12">
-            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 border-l-4 border-green-500 pl-4">
-                <span class="text-green-500"><i class="fa-solid fa-robot"></i></span> Passive & Games
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="cat-passive">
+        <section>
+            <div class="flex items-center gap-3 mb-6 border-b border-blue-500/30 pb-4">
+                <i class="fa-solid fa-clock text-blue-400 text-xl"></i>
+                <h3 class="text-2xl font-bold text-white">Hourly Claims</h3>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" id="cat-hourly">
                 </div>
-        </div>
+        </section>
 
-        <div class="mb-12">
-            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 border-l-4 border-purple-500 pl-4">
-                <span class="text-purple-500"><i class="fa-solid fa-list-check"></i></span> Task Walls & PTC
-            </h3>
+        <section>
+            <div class="flex items-center gap-3 mb-6 border-b border-purple-500/30 pb-4">
+                <i class="fa-solid fa-gamepad text-purple-400 text-xl"></i>
+                <h3 class="text-2xl font-bold text-white">Tasks & Games</h3>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="cat-tasks">
                 </div>
-        </div>
-
-        <section id="guide" class="mt-20 bg-slate-900 p-8 rounded-2xl border border-slate-800">
-            <h2 class="text-3xl font-bold mb-6">How to Maximize Your Crypto Earnings</h2>
-            <div class="prose prose-invert max-w-none text-slate-400">
-                <p>Earning free cryptocurrency requires consistency. This page is designed to be your "Command Center." By bookmarking this page, you ensure you never miss a claim.</p>
-                <div class="grid md:grid-cols-2 gap-8 mt-8">
-                    <div>
-                        <h4 class="text-white font-bold text-xl mb-2">1. The Tab Strategy</h4>
-                        <p>Don't open one link, finish it, and close it. Ctrl+Click (or Command+Click) all the links in the "Hourly" section to open them in new tabs. Cycle through them quickly to claim, then close them all at once.</p>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-bold text-xl mb-2">2. Compound Interest</h4>
-                        <p>Sites like <strong>FreeBitco.in</strong> and <strong>Cointiply</strong> offer interest on your balance. Don't withdraw immediately. Let your balance grow to hit the threshold for daily interest.</p>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-bold text-xl mb-2">3. Referral Building</h4>
-                        <p>Once you are signed up, grab your own referral link and share it. Passive income from referrals is the secret to making significant amounts of crypto.</p>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-bold text-xl mb-2">4. Safety First</h4>
-                        <p>Always use a separate email address for faucets to keep your personal inbox clean. Never reuse passwords. Use a hardware wallet for long-term storage.</p>
-                    </div>
-                </div>
-            </div>
         </section>
 
     </main>
 
-    <footer class="bg-slate-900 border-t border-slate-800 py-10 mt-10">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-slate-500 text-sm">
-                Disclaimer: This website contains referral links. We may earn a small commission at no cost to you. 
-                Cryptocurrency involves risk. Do your own research.
+    <footer class="border-t border-white/5 bg-slate-900 py-12 text-center">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="text-slate-500 text-sm mb-4">
+                "The compound effect is the strategy of reaping huge rewards from small, seemingly insignificant actions."
             </p>
-            <p class="text-slate-600 text-xs mt-4">&copy; 2024 CryptoDaily Hub. All rights reserved.</p>
+            <p class="text-slate-700 text-xs">
+                &copy; 2024 CryptoDaily. All links are referral links. Do your own research (DYOR).
+            </p>
         </div>
     </footer>
 
     <script>
-        // DATA SOURCE
-        const links = [
-            // ESSENTIALS / EXCHANGES / WALLETS
-            { name: "Binance", url: "https://accounts.binance.com/en/register?ref=TAWUFT3R", cat: "essentials", desc: "World's #1 Exchange. Sign up for bonuses." },
-            { name: "FaucetPay", url: "https://faucetpay.io/?r=95880", cat: "essentials", desc: "Micro-wallet required for most faucets here." },
-            { name: "MEXC Global", url: "https://www.mexc.com/auth/signup?inviteCode=2pLgC", cat: "essentials", desc: "Great for low cap gems and new coins." },
-            { name: "BingX", url: "https://bingx.com/invite/9NNUWM", cat: "essentials", desc: "Copy trading and social trading platform." },
-            { name: "Payeer", url: "https://payeer.com/?session=11397475", cat: "essentials", desc: "Fiat and Crypto wallet. Easy cashouts." },
-            { name: "FreeBitco.in", url: "https://freebitco.in/?r=17006348", cat: "essentials", desc: "The King of faucets. Hourly BTC + Interest." },
-            { name: "Cointiply", url: "https://cointiply.com/r/mOnqp", cat: "essentials", desc: "Highest paying faucet and offerwall." },
-            { name: "CoinPayU", url: "https://www.coinpayu.com/?r=dashboard", cat: "essentials", desc: "Best for selling traffic and clicking ads." },
+        // MASTER DATA LIST (Deduplicated & Categorized)
+        const database = [
+            // --- DePIN & AI NODES (New & Hot) ---
+            { name: "GetGrass", url: "https://app.getgrass.io/register?referralCode=XBPRl6U7sAvvzRX", cat: "depin", desc: "Sell unused bandwidth to AI labs." },
+            { name: "Nodepay", url: "https://app.nodepay.ai/register?ref=5pxS8VIIZzNeDSF", cat: "depin", desc: "Decentralized AI training bandwidth." },
+            { name: "OptimAI Node", url: "https://node.optimai.network/register?ref=0EB0B06E", cat: "depin", desc: "Run the node for passive rewards." },
+            { name: "OptimAI Social", url: "https://app.optimai.im/generate-tweet", cat: "depin", desc: "AI Tweet generator tool." },
+            { name: "Namso Validator", url: "https://app.namso.network/dashboard/", cat: "depin", desc: "Browser-based validator node." },
+            { name: "Gata.xyz", url: "https://app.gata.xyz?invite_code=8epdx7rg", cat: "depin", desc: "AI data exchange platform." },
+            { name: "Aro Network", url: "https://dashboard.aro.network/signup?referral=GJIXM0", cat: "depin", desc: "Decentralized edge computing." },
+            { name: "3DOS", url: "https://dashboard.3dos.io/register?ref_code=6d8572", cat: "depin", desc: "Decentralized manufacturing network." },
+            { name: "Pawns.app", url: "https://pawns.app/?r=1112465", cat: "depin", desc: "Share internet for fiat/crypto." },
             
-            // HOURLY / QUICK CLAIMS
-            { name: "FireFaucet", url: "https://firefaucet.win/ref/126786", cat: "hourly", desc: "Auto claim directly to your wallet." },
-            { name: "AutoFaucet Dutchy", url: "https://autofaucet.dutchycorp.space/?r=Autofaucets", cat: "hourly", desc: "Supports 70+ coins." },
-            { name: "VieFaucet", url: "https://viefaucet.com?r=6380ee9189dc9d60cddeaf22", cat: "hourly", desc: "Instant payout to FaucetPay." },
-            { name: "EarnBitMoon", url: "https://earnbitmoon.club/?ref=265500", cat: "hourly", desc: "Claims every 5 mins." },
-            { name: "FreeBNB", url: "https://freebnb.in?ref=t3guZH6504", cat: "hourly", desc: "Hourly BNB." },
-            { name: "FreeBCH", url: "https://freebch.in?ref=GYbcNKDvc8", cat: "hourly", desc: "Hourly BCH." },
-            { name: "FreeLTC", url: "https://litepick.io/?ref=source", cat: "hourly", desc: "Hourly Litecoin." },
-            { name: "FreeDoge", url: "https://dogepick.io/?ref=limana", cat: "hourly", desc: "Hourly Doge." },
-            { name: "FreeSol", url: "https://solpick.io/?ref=dashboard", cat: "hourly", desc: "Hourly Solana." },
-            { name: "FreeTron", url: "https://freetron.in?ref=D96wTKmOPD", cat: "hourly", desc: "Hourly TRX." },
-            { name: "FreeXRP", url: "https://freexrp.in?ref=sKqECBxDCJ", cat: "hourly", desc: "Hourly Ripple." },
-            { name: "FreeSUI", url: "https://freesui.in?ref=2OBNF6surV", cat: "hourly", desc: "Hourly SUI." },
-            { name: "FreeMATIC", url: "https://polpick.io/?ref=dashboard", cat: "hourly", desc: "Hourly Matic." },
-            { name: "FreeUSDT", url: "https://usdpick.io?ref=fAYHy9teXq", cat: "hourly", desc: "Hourly Tether." },
-            { name: "FreeTON", url: "https://freetoncoin.in?ref=4oDtavonot", cat: "hourly", desc: "Hourly TON." },
-            { name: "FreeSHIB", url: "https://freeshib.in?ref=Q4gBET4aub", cat: "hourly", desc: "Hourly SHIB." },
-            { name: "FreeArb", url: "https://freearb.in?ref=DT-wOppZxs", cat: "hourly", desc: "Hourly Arbitrum." },
-            { name: "FreeTrump", url: "https://freetrump.in?ref=Qzx6sqZz1E", cat: "hourly", desc: "Meme coin faucet." },
-            
-            // PASSIVE / GAMES / MINING
-            { name: "RollerCoin", url: "https://rollercoin.com/?r=kcq1472k", cat: "passive", desc: "Play 8-bit games to mine real crypto." },
-            { name: "LimerCoin", url: "https://limercoin.com/?ref=4i6ljids", cat: "passive", desc: "Strategy mining simulator." },
-            { name: "SimpleBits", url: "https://simplebits.io/ref/0rd4li1cSLTL", cat: "passive", desc: "Hardware mining simulator." },
-            { name: "MiningBlocks", url: "https://miningblocks.club/?Referral=35696", cat: "passive", desc: "Block based mining game." },
-            { name: "Pawns.app", url: "https://pawns.app/?r=1112465", cat: "passive", desc: "Share internet bandwidth for cash." },
-            { name: "GetGrass", url: "https://app.getgrass.io/register?referralCode=XBPRl6U7sAvvzRX", cat: "passive", desc: "AI Bandwidth sharing (New/Hot)." },
-            { name: "EtherDROPS", url: "https://t.me/EtherDROPS_bot?start=promo_OYJAP5", cat: "passive", desc: "Telegram Tracking Bot." },
-            { name: "Gamee", url: "https://t.me/gamee/start?startapp=eyJyZWYiOjMzMzYwMDY0MH0", cat: "passive", desc: "Play games on Telegram for crypto." },
-            { name: "BCH Games", url: "https://bch.games/play/dashboard", cat: "passive", desc: "Crypto Casino (Risk Warning)." },
-            { name: "LuckyWatch", url: "https://luckywatch.pro/u/0oqit", cat: "passive", desc: "Watch ads/videos." },
-            
-            // TASKS / PTC / ADS
-            { name: "TimeBucks", url: "https://timebucks.com/?refID=219093340", cat: "tasks", desc: "Surveys, TikToks, and tasks." },
-            { name: "AdBTC", url: "https://r.adbtc.top/1169353", cat: "tasks", desc: "Best for surfing sites for Satoshis." },
-            { name: "Surfe.be", url: "https://surfe.be/ext/178882", cat: "tasks", desc: "Browser extension that pays you." },
-            { name: "Publish0x", url: "https://www.publish0x.com/?a=OpnelZ1bKB", cat: "tasks", desc: "Earn by reading and writing articles." },
-            { name: "Everve", url: "https://everve.net/ref/678797/", cat: "tasks", desc: "Social media automation." },
-            { name: "Earnviv", url: "https://earnviv.com/?r=36182", cat: "tasks", desc: "High paying offerwalls." },
-            { name: "2Captcha", url: "https://2captcha.com/?from=9690712", cat: "tasks", desc: "Solve captchas for money." },
-            { name: "BTCAdSpace", url: "https://btcadspace.com/ref/source", cat: "tasks", desc: "View ads for Bitcoin." },
-            { name: "FreeWard", url: "https://freeward.net/ref/7pex8", cat: "tasks", desc: "Offerwalls and tasks." },
-            { name: "Certik Quest", url: "https://skynet.certik.com/quest/signup?referralId=4324d09a-bf19-437c-8635-645a52dbf136", cat: "tasks", desc: "Learn to earn." },
-            { name: "SosoValue", url: "https://sosovalue.com/join/0DCN0PVQ", cat: "tasks", desc: "Financial research rewards." },
-             { name: "Billions", url: "https://signup.billions.network/?rc=IMENAAXD", cat: "tasks", desc: "New network." },
-             { name: "BlockScout", url: "https://eth.blockscout.com/?ref=6RZXK3", cat: "tasks", desc: "Explorer rewards." },
-             { name: "RewardVid", url: "https://rewardvid.com?ref=ETqLenDf", cat: "tasks", desc: "Watch videos." }
+            // --- ESSENTIALS (High Priority) ---
+            { name: "FreeBitco.in", url: "https://freebitco.in/?r=17006348", cat: "essentials", desc: "Oldest faucet. Hourly BTC + Interest." },
+            { name: "Cointiply", url: "https://cointiply.com/r/mOnqp", cat: "essentials", desc: "Best offerwall & hourly roll." },
+            { name: "Binance", url: "https://accounts.binance.com/en/register?ref=TAWUFT3R", cat: "essentials", desc: "Top exchange. Check Launchpad." },
+            { name: "FaucetPay", url: "https://faucetpay.io/?r=95880", cat: "essentials", desc: "Micro-wallet for instant payouts." },
+            { name: "CoinPayU", url: "https://www.coinpayu.com/?r=dashboard", cat: "essentials", desc: "View ads for Satoshis." },
+            { name: "MEXC", url: "https://www.mexc.com/auth/signup?inviteCode=2pLgC", cat: "essentials", desc: "Low cap gems exchange." },
+            { name: "BingX", url: "https://bingx.com/invite/9NNUWM", cat: "essentials", desc: "Copy trading platform." },
+
+            // --- TASKS / QUESTS / GAMES ---
+            { name: "Brevis Network", url: "https://proving-grounds.brevis.network/VQcpfa", cat: "tasks", desc: "ZK Prover network tasks." },
+            { name: "Mission Intel", url: "https://mission.superintent.ai/?referralCode=eIJAOWtvmB", cat: "tasks", desc: "AI data labeling quests." },
+            { name: "BlockStreet", url: "https://blockstreet.money/dashboard?invite_code=mvEz8G", cat: "tasks", desc: "Financial tasks dashboard." },
+            { name: "LuckyX", url: "https://app.luckyx.world/?p=Yie918", cat: "tasks", desc: "Web3 questing platform." },
+            { name: "Fight ID", url: "https://app.fight.id/home", cat: "tasks", desc: "Fight personality app." },
+            { name: "Certik Quest", url: "https://skynet.certik.com/quest/signup?referralId=4324d09a-bf19-437c-8635-645a52dbf136", cat: "tasks", desc: "Daily security learning quests." },
+            { name: "SosoValue", url: "https://sosovalue.com/join/0DCN0PVQ", cat: "tasks", desc: "Investment research rewards." },
+            { name: "Billions", url: "https://signup.billions.network/?rc=IMENAAXD", cat: "tasks", desc: "Network signup." },
+            { name: "BlockScout", url: "https://eth.blockscout.com/?ref=6RZXK3", cat: "tasks", desc: "Explorer interaction rewards." },
+            { name: "RollerCoin", url: "https://rollercoin.com/?r=kcq1472k", cat: "tasks", desc: "Mining simulator game." },
+            { name: "LimerCoin", url: "https://limercoin.com/?ref=4i6ljids", cat: "tasks", desc: "Strategy mining game." },
+            { name: "SimpleBits", url: "https://simplebits.io/ref/0rd4li1cSLTL", cat: "tasks", desc: "Hardware mining sim." },
+            { name: "MiningBlocks", url: "https://miningblocks.club/?Referral=35696", cat: "tasks", desc: "Block mining game." },
+            { name: "BCH Games", url: "https://bch.games/play/dashboard", cat: "tasks", desc: "Casino (Warning: Risk)." },
+            { name: "Gamee", url: "https://t.me/gamee/start?startapp=eyJyZWYiOjMzMzYwMDY0MH0", cat: "tasks", desc: "Telegram gaming." },
+            { name: "EtherDROPS", url: "https://t.me/EtherDROPS_bot?start=promo_OYJAP5", cat: "tasks", desc: "Telegram tracker bot." },
+            { name: "2Captcha", url: "https://2captcha.com/?from=9690712", cat: "tasks", desc: "Solve captchas for cash." },
+            { name: "TimeBucks", url: "https://timebucks.com/?refID=219093340", cat: "tasks", desc: "Surveys and tasks." },
+            { name: "AdBTC", url: "https://r.adbtc.top/1169353", cat: "tasks", desc: "Surf ads for BTC." },
+            { name: "Surfe.be", url: "https://surfe.be/ext/178882", cat: "tasks", desc: "Browser extension ads." },
+            { name: "Everve", url: "https://everve.net/ref/678797/", cat: "tasks", desc: "Social automation." },
+            { name: "Publish0x", url: "https://www.publish0x.com/?a=OpnelZ1bKB", cat: "tasks", desc: "Read/Write to earn." },
+            { name: "Earnviv", url: "https://earnviv.com/?r=36182", cat: "tasks", desc: "Offerwall tasks." },
+            { name: "BTCAdSpace", url: "https://btcadspace.com/ref/source", cat: "tasks", desc: "View ads." },
+            { name: "FreeWard", url: "https://freeward.net/ref/7pex8", cat: "tasks", desc: "Rewards platform." },
+            { name: "RewardVid", url: "https://rewardvid.com?ref=ETqLenDf", cat: "tasks", desc: "Watch videos." },
+            { name: "LuckyWatch", url: "https://luckywatch.pro/u/0oqit", cat: "tasks", desc: "Watch videos." },
+
+            // --- HOURLY FAUCETS (Quick Fire) ---
+            { name: "FireFaucet", url: "https://firefaucet.win/ref/126786", cat: "hourly", desc: "ACP Auto-claim." },
+            { name: "DutchyCorp", url: "https://autofaucet.dutchycorp.space/?r=Autofaucets", cat: "hourly", desc: "Multi-coin auto." },
+            { name: "VieFaucet", url: "https://viefaucet.com?r=6380ee9189dc9d60cddeaf22", cat: "hourly", desc: "Direct to FP." },
+            { name: "EarnBitMoon", url: "https://earnbitmoon.club/?ref=265500", cat: "hourly", desc: "5 min claims." },
+            { name: "FreeBNB", url: "https://freebnb.in?ref=t3guZH6504", cat: "hourly", desc: "BNB Faucet." },
+            { name: "FreeBCH", url: "https://freebch.in?ref=GYbcNKDvc8", cat: "hourly", desc: "BCH Faucet." },
+            { name: "FreeLTC", url: "https://litepick.io/?ref=source", cat: "hourly", desc: "LTC Faucet." },
+            { name: "FreeDoge", url: "https://dogepick.io/?ref=limana", cat: "hourly", desc: "Doge Faucet." },
+            { name: "FreeSol", url: "https://solpick.io/?ref=dashboard", cat: "hourly", desc: "Solana Faucet." },
+            { name: "FreeTron", url: "https://freetron.in?ref=D96wTKmOPD", cat: "hourly", desc: "TRX Faucet." },
+            { name: "FreeXRP", url: "https://freexrp.in?ref=sKqECBxDCJ", cat: "hourly", desc: "Ripple Faucet." },
+            { name: "FreeSUI", url: "https://freesui.in?ref=2OBNF6surV", cat: "hourly", desc: "SUI Faucet." },
+            { name: "FreeMatic", url: "https://polpick.io/?ref=dashboard", cat: "hourly", desc: "Matic Faucet." },
+            { name: "FreeUSDT", url: "https://usdpick.io?ref=fAYHy9teXq", cat: "hourly", desc: "USDT Faucet." },
+            { name: "FreeTON", url: "https://freetoncoin.in?ref=4oDtavonot", cat: "hourly", desc: "TON Faucet." },
+            { name: "FreeSHIB", url: "https://freeshib.in?ref=Q4gBET4aub", cat: "hourly", desc: "Shiba Faucet." },
+            { name: "FreeArb", url: "https://freearb.in?ref=DT-wOppZxs", cat: "hourly", desc: "Arbitrum Faucet." },
+            { name: "FreeTrump", url: "https://freetrump.in?ref=Qzx6sqZz1E", cat: "hourly", desc: "Trump Coin." },
+            { name: "DogeStation", url: "https://dogestation.com/register.php?ref=6902DA99", cat: "hourly", desc: "Doge Faucet." },
+            { name: "AdBCH", url: "https://adbch.top/r/312844", cat: "hourly", desc: "BCH Ads." },
+            { name: "Payeer", url: "https://payeer.com/?session=11397475", cat: "hourly", desc: "Wallet." }
         ];
 
         // RENDER LOGIC
-        function renderLinks() {
+        function render() {
+            // 1. Date Check
             const today = new Date().toISOString().split('T')[0];
             let history = JSON.parse(localStorage.getItem('clickHistory')) || {};
-            
-            // Reset logic if new day
             if(localStorage.getItem('lastDate') !== today) {
                 history = {};
                 localStorage.setItem('lastDate', today);
                 localStorage.setItem('clickHistory', JSON.stringify(history));
             }
 
-            let totalLinks = links.length;
+            // 2. Sort Categories (Prioritize DePIN)
+            const containers = {
+                depin: document.getElementById('cat-depin'),
+                essentials: document.getElementById('cat-essentials'),
+                hourly: document.getElementById('cat-hourly'),
+                tasks: document.getElementById('cat-tasks')
+            };
+
+            // Clear current
+            Object.values(containers).forEach(c => c ? c.innerHTML = '' : null);
+
             let clickedCount = 0;
 
-            links.forEach((link, index) => {
-                const isVisited = history[link.url];
+            database.forEach((item, index) => {
+                const isVisited = history[item.url];
                 if(isVisited) clickedCount++;
 
+                // Card Design
                 const card = document.createElement('div');
-                card.className = `glass-card rounded-xl p-4 flex flex-col justify-between relative ${isVisited ? 'visited' : ''}`;
+                card.className = `glass-card rounded-xl p-4 relative flex flex-col justify-between group overflow-hidden ${isVisited ? 'opacity-60 grayscale-[0.5]' : ''}`;
                 card.id = `card-${index}`;
 
-                const btnClass = isVisited 
-                    ? "bg-slate-700 text-slate-400 cursor-default" 
-                    : "btn-grad text-white shadow-lg cursor-pointer";
+                // Different styles for category
+                let btnStyle = isVisited 
+                    ? "btn-visited" 
+                    : "btn-claim text-white shadow-lg cursor-pointer";
                 
-                const statusColor = isVisited ? "bg-emerald-500 shadow-[0_0_10px_#10b981]" : "bg-rose-500 shadow-[0_0_10px_#f43f5e]";
+                let btnText = isVisited ? "Done Today" : "Open";
+                
+                // Special highlight for DePIN
+                const isDepin = item.cat === 'depin';
+                const accentColor = isDepin ? 'text-cyan-400' : 'text-white';
 
                 card.innerHTML = `
-                    <div class="absolute top-4 right-4 ${statusColor} w-3 h-3 rounded-full transition-all duration-500" id="status-${index}"></div>
-                    <div>
-                        <h4 class="font-bold text-lg mb-1 text-white">${link.name}</h4>
-                        <p class="text-xs text-slate-400 mb-4 h-8 overflow-hidden">${link.desc}</p>
+                    <div class="indicator-dot ${isVisited ? 'status-done' : 'status-pending'}" id="status-${index}"></div>
+                    
+                    <div class="mb-4 relative z-10">
+                        <h4 class="font-bold text-base ${accentColor} mb-1 truncate pr-4">${item.name}</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed h-8 overflow-hidden line-clamp-2">${item.desc}</p>
                     </div>
-                    <a href="${link.url}" target="_blank" rel="nofollow noopener" 
-                       onclick="trackClick('${link.url}', ${index})"
-                       class="w-full py-2 rounded-lg text-center font-semibold text-sm transition-all ${btnClass}">
-                       ${isVisited ? 'Visited Today' : 'Claim Now <i class="fa-solid fa-arrow-right ml-1"></i>'}
+
+                    <a href="${item.url}" target="_blank" rel="nofollow noopener" 
+                       onclick="track('${item.url}', ${index})"
+                       class="w-full py-2 rounded-lg text-center font-semibold text-xs tracking-wide uppercase ${btnStyle} relative z-10">
+                       ${btnText}
                     </a>
+                    
+                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                 `;
-                
-                const container = document.getElementById(`cat-${link.cat}`) || document.getElementById('cat-tasks'); // Fallback
-                if(container) container.appendChild(card);
+
+                if(containers[item.cat]) {
+                    containers[item.cat].appendChild(card);
+                }
             });
 
-            updateProgress(clickedCount, totalLinks);
+            updateProgressBar(clickedCount, database.length);
         }
 
-        function trackClick(url, index) {
+        function track(url, index) {
             let history = JSON.parse(localStorage.getItem('clickHistory')) || {};
             if (!history[url]) {
                 history[url] = true;
                 localStorage.setItem('clickHistory', JSON.stringify(history));
                 
-                // UI Update without reload
+                // Instant visual feedback
                 const card = document.getElementById(`card-${index}`);
                 const btn = card.querySelector('a');
                 const status = document.getElementById(`status-${index}`);
                 
-                card.classList.add('visited');
-                btn.className = "w-full py-2 rounded-lg text-center font-semibold text-sm transition-all bg-slate-700 text-slate-400 cursor-default";
-                btn.innerHTML = "Visited Today";
-                status.className = "absolute top-4 right-4 bg-emerald-500 shadow-[0_0_10px_#10b981] w-3 h-3 rounded-full transition-all duration-500";
-                
-                // Recalculate progress
-                let total = links.length;
-                let clicked = Object.keys(history).length;
-                updateProgress(clicked, total);
+                card.classList.add('opacity-60', 'grayscale-[0.5]');
+                btn.className = "w-full py-2 rounded-lg text-center font-semibold text-xs tracking-wide uppercase btn-visited relative z-10";
+                btn.innerText = "Done Today";
+                status.className = "indicator-dot status-done";
+
+                // Update bar
+                const total = database.length;
+                const clicked = Object.keys(history).length;
+                updateProgressBar(clicked, total);
             }
         }
 
-        function updateProgress(clicked, total) {
+        function updateProgressBar(clicked, total) {
             const percent = Math.round((clicked / total) * 100);
             const bar = document.getElementById('progressBar');
+            const text = document.getElementById('progressText');
+            
             bar.style.width = `${percent}%`;
+            text.innerText = `${clicked}/${total} TASKS`;
         }
 
         function resetTracker() {
@@ -304,29 +353,26 @@
             }
         }
 
-        // Countdown Timer to UTC Midnight
+        // Countdown Timer
         setInterval(() => {
             const now = new Date();
             const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
             const diff = tomorrow - now;
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            document.getElementById('countdown').innerText = `${hours}h ${minutes}m`;
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('countdown').innerText = `${h}h ${m}m`;
         }, 60000);
 
-        // Init
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // Sort links alphabetically within categories (optional, but looks nicer)
-            // links.sort((a, b) => a.name.localeCompare(b.name));
-            renderLinks();
-            
-            // Initial timer set
             const now = new Date();
             const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
             const diff = tomorrow - now;
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            document.getElementById('countdown').innerText = `${hours}h ${minutes}m`;
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('countdown').innerText = `${h}h ${m}m`;
+            
+            render();
         });
     </script>
 </body>
