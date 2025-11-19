@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoDaily - The Ultimate Daily Earning Checklist</title>
+    <meta name="description" content="Maximize your crypto earnings with our curated daily checklist of the best faucets, mining simulators, and exchanges. Updated daily.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+        }
+        .btn-grad {
+            background-image: linear-gradient(to right, #3b82f6 0%, #8b5cf6 51%, #3b82f6 100%);
+            transition: 0.5s;
+            background-size: 200% auto;
+        }
+        .btn-grad:hover { background-position: right center; }
+        
+        /* Checkbox animation */
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+            transition: all 0.3s ease;
+        }
+        .visited .status-indicator {
+            background-color: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+        .visited { opacity: 0.6; filter: grayscale(0.8); }
+        .visited:hover { opacity: 1; filter: grayscale(0); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="w-full py-4 border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 backdrop-blur">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-coins text-blue-500 text-2xl"></i>
+                <h1 class="text-2xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">CryptoDaily</h1>
+            </div>
+            <div class="text-sm text-slate-400 hidden md:block">
+                <i class="fa-regular fa-clock"></i> Resets in: <span id="countdown" class="font-mono text-blue-400"></span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative py-20 px-4 text-center overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[100px] -z-10"></div>
+        <h2 class="text-5xl md:text-6xl font-bold mb-6">Your Daily <br><span class="text-blue-500">Income Routine</span></h2>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
+            A curated, tracked list of the highest paying crypto faucets, PTC sites, and mining simulators. 
+            Bookmark this page. Complete the list daily. Maximize your earnings.
+        </p>
+        <div class="flex justify-center gap-4">
+            <button onclick="resetTracker()" class="px-6 py-2 rounded-full border border-slate-600 hover:bg-slate-800 text-sm transition">
+                <i class="fa-solid fa-rotate-right"></i> Reset Checklist
+            </button>
+            <a href="#guide" class="px-6 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-sm transition">
+                <i class="fa-solid fa-book"></i> Strategy Guide
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 pb-20 w-full">
+        
+        <div class="mb-10 bg-slate-800 rounded-full h-4 w-full max-w-3xl mx-auto overflow-hidden relative group">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-blue-500 to-purple-600 w-0 transition-all duration-500"></div>
+            <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center text-[10px] font-bold tracking-widest opacity-0 group-hover:opacity-100 transition">
+                DAILY PROGRESS
+            </div>
+        </div>
+
+        <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 border-l-4 border-yellow-500 pl-4">
+                <span class="text-yellow-500"><i class="fa-solid fa-star"></i></span> High Priority / Essentials
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="cat-essentials">
+                </div>
+        </div>
+
+        <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 border-l-4 border-blue-500 pl-4">
+                <span class="text-blue-500"><i class="fa-solid fa-hourglass-half"></i></span> Hourly Claims (Quick)
+            </h3>
+            <p class="text-slate-400 text-sm mb-4">These sites allow claims every hour. Open them all in tabs and cycle through.</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="cat-hourly">
+                </div>
+        </div>
+
+        <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 border-l-4 border-green-500 pl-4">
+                <span class="text-green-500"><i class="fa-solid fa-robot"></i></span> Passive & Games
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="cat-passive">
+                </div>
+        </div>
+
+        <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2 border-l-4 border-purple-500 pl-4">
+                <span class="text-purple-500"><i class="fa-solid fa-list-check"></i></span> Task Walls & PTC
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="cat-tasks">
+                </div>
+        </div>
+
+        <section id="guide" class="mt-20 bg-slate-900 p-8 rounded-2xl border border-slate-800">
+            <h2 class="text-3xl font-bold mb-6">How to Maximize Your Crypto Earnings</h2>
+            <div class="prose prose-invert max-w-none text-slate-400">
+                <p>Earning free cryptocurrency requires consistency. This page is designed to be your "Command Center." By bookmarking this page, you ensure you never miss a claim.</p>
+                <div class="grid md:grid-cols-2 gap-8 mt-8">
+                    <div>
+                        <h4 class="text-white font-bold text-xl mb-2">1. The Tab Strategy</h4>
+                        <p>Don't open one link, finish it, and close it. Ctrl+Click (or Command+Click) all the links in the "Hourly" section to open them in new tabs. Cycle through them quickly to claim, then close them all at once.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-xl mb-2">2. Compound Interest</h4>
+                        <p>Sites like <strong>FreeBitco.in</strong> and <strong>Cointiply</strong> offer interest on your balance. Don't withdraw immediately. Let your balance grow to hit the threshold for daily interest.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-xl mb-2">3. Referral Building</h4>
+                        <p>Once you are signed up, grab your own referral link and share it. Passive income from referrals is the secret to making significant amounts of crypto.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-xl mb-2">4. Safety First</h4>
+                        <p>Always use a separate email address for faucets to keep your personal inbox clean. Never reuse passwords. Use a hardware wallet for long-term storage.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-10 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-500 text-sm">
+                Disclaimer: This website contains referral links. We may earn a small commission at no cost to you. 
+                Cryptocurrency involves risk. Do your own research.
+            </p>
+            <p class="text-slate-600 text-xs mt-4">&copy; 2024 CryptoDaily Hub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // DATA SOURCE
+        const links = [
+            // ESSENTIALS / EXCHANGES / WALLETS
+            { name: "Binance", url: "https://accounts.binance.com/en/register?ref=TAWUFT3R", cat: "essentials", desc: "World's #1 Exchange. Sign up for bonuses." },
+            { name: "FaucetPay", url: "https://faucetpay.io/?r=95880", cat: "essentials", desc: "Micro-wallet required for most faucets here." },
+            { name: "MEXC Global", url: "https://www.mexc.com/auth/signup?inviteCode=2pLgC", cat: "essentials", desc: "Great for low cap gems and new coins." },
+            { name: "BingX", url: "https://bingx.com/invite/9NNUWM", cat: "essentials", desc: "Copy trading and social trading platform." },
+            { name: "Payeer", url: "https://payeer.com/?session=11397475", cat: "essentials", desc: "Fiat and Crypto wallet. Easy cashouts." },
+            { name: "FreeBitco.in", url: "https://freebitco.in/?r=17006348", cat: "essentials", desc: "The King of faucets. Hourly BTC + Interest." },
+            { name: "Cointiply", url: "https://cointiply.com/r/mOnqp", cat: "essentials", desc: "Highest paying faucet and offerwall." },
+            { name: "CoinPayU", url: "https://www.coinpayu.com/?r=dashboard", cat: "essentials", desc: "Best for selling traffic and clicking ads." },
+            
+            // HOURLY / QUICK CLAIMS
+            { name: "FireFaucet", url: "https://firefaucet.win/ref/126786", cat: "hourly", desc: "Auto claim directly to your wallet." },
+            { name: "AutoFaucet Dutchy", url: "https://autofaucet.dutchycorp.space/?r=Autofaucets", cat: "hourly", desc: "Supports 70+ coins." },
+            { name: "VieFaucet", url: "https://viefaucet.com?r=6380ee9189dc9d60cddeaf22", cat: "hourly", desc: "Instant payout to FaucetPay." },
+            { name: "EarnBitMoon", url: "https://earnbitmoon.club/?ref=265500", cat: "hourly", desc: "Claims every 5 mins." },
+            { name: "FreeBNB", url: "https://freebnb.in?ref=t3guZH6504", cat: "hourly", desc: "Hourly BNB." },
+            { name: "FreeBCH", url: "https://freebch.in?ref=GYbcNKDvc8", cat: "hourly", desc: "Hourly BCH." },
+            { name: "FreeLTC", url: "https://litepick.io/?ref=source", cat: "hourly", desc: "Hourly Litecoin." },
+            { name: "FreeDoge", url: "https://dogepick.io/?ref=limana", cat: "hourly", desc: "Hourly Doge." },
+            { name: "FreeSol", url: "https://solpick.io/?ref=dashboard", cat: "hourly", desc: "Hourly Solana." },
+            { name: "FreeTron", url: "https://freetron.in?ref=D96wTKmOPD", cat: "hourly", desc: "Hourly TRX." },
+            { name: "FreeXRP", url: "https://freexrp.in?ref=sKqECBxDCJ", cat: "hourly", desc: "Hourly Ripple." },
+            { name: "FreeSUI", url: "https://freesui.in?ref=2OBNF6surV", cat: "hourly", desc: "Hourly SUI." },
+            { name: "FreeMATIC", url: "https://polpick.io/?ref=dashboard", cat: "hourly", desc: "Hourly Matic." },
+            { name: "FreeUSDT", url: "https://usdpick.io?ref=fAYHy9teXq", cat: "hourly", desc: "Hourly Tether." },
+            { name: "FreeTON", url: "https://freetoncoin.in?ref=4oDtavonot", cat: "hourly", desc: "Hourly TON." },
+            { name: "FreeSHIB", url: "https://freeshib.in?ref=Q4gBET4aub", cat: "hourly", desc: "Hourly SHIB." },
+            { name: "FreeArb", url: "https://freearb.in?ref=DT-wOppZxs", cat: "hourly", desc: "Hourly Arbitrum." },
+            { name: "FreeTrump", url: "https://freetrump.in?ref=Qzx6sqZz1E", cat: "hourly", desc: "Meme coin faucet." },
+            
+            // PASSIVE / GAMES / MINING
+            { name: "RollerCoin", url: "https://rollercoin.com/?r=kcq1472k", cat: "passive", desc: "Play 8-bit games to mine real crypto." },
+            { name: "LimerCoin", url: "https://limercoin.com/?ref=4i6ljids", cat: "passive", desc: "Strategy mining simulator." },
+            { name: "SimpleBits", url: "https://simplebits.io/ref/0rd4li1cSLTL", cat: "passive", desc: "Hardware mining simulator." },
+            { name: "MiningBlocks", url: "https://miningblocks.club/?Referral=35696", cat: "passive", desc: "Block based mining game." },
+            { name: "Pawns.app", url: "https://pawns.app/?r=1112465", cat: "passive", desc: "Share internet bandwidth for cash." },
+            { name: "GetGrass", url: "https://app.getgrass.io/register?referralCode=XBPRl6U7sAvvzRX", cat: "passive", desc: "AI Bandwidth sharing (New/Hot)." },
+            { name: "EtherDROPS", url: "https://t.me/EtherDROPS_bot?start=promo_OYJAP5", cat: "passive", desc: "Telegram Tracking Bot." },
+            { name: "Gamee", url: "https://t.me/gamee/start?startapp=eyJyZWYiOjMzMzYwMDY0MH0", cat: "passive", desc: "Play games on Telegram for crypto." },
+            { name: "BCH Games", url: "https://bch.games/play/dashboard", cat: "passive", desc: "Crypto Casino (Risk Warning)." },
+            { name: "LuckyWatch", url: "https://luckywatch.pro/u/0oqit", cat: "passive", desc: "Watch ads/videos." },
+            
+            // TASKS / PTC / ADS
+            { name: "TimeBucks", url: "https://timebucks.com/?refID=219093340", cat: "tasks", desc: "Surveys, TikToks, and tasks." },
+            { name: "AdBTC", url: "https://r.adbtc.top/1169353", cat: "tasks", desc: "Best for surfing sites for Satoshis." },
+            { name: "Surfe.be", url: "https://surfe.be/ext/178882", cat: "tasks", desc: "Browser extension that pays you." },
+            { name: "Publish0x", url: "https://www.publish0x.com/?a=OpnelZ1bKB", cat: "tasks", desc: "Earn by reading and writing articles." },
+            { name: "Everve", url: "https://everve.net/ref/678797/", cat: "tasks", desc: "Social media automation." },
+            { name: "Earnviv", url: "https://earnviv.com/?r=36182", cat: "tasks", desc: "High paying offerwalls." },
+            { name: "2Captcha", url: "https://2captcha.com/?from=9690712", cat: "tasks", desc: "Solve captchas for money." },
+            { name: "BTCAdSpace", url: "https://btcadspace.com/ref/source", cat: "tasks", desc: "View ads for Bitcoin." },
+            { name: "FreeWard", url: "https://freeward.net/ref/7pex8", cat: "tasks", desc: "Offerwalls and tasks." },
+            { name: "Certik Quest", url: "https://skynet.certik.com/quest/signup?referralId=4324d09a-bf19-437c-8635-645a52dbf136", cat: "tasks", desc: "Learn to earn." },
+            { name: "SosoValue", url: "https://sosovalue.com/join/0DCN0PVQ", cat: "tasks", desc: "Financial research rewards." },
+             { name: "Billions", url: "https://signup.billions.network/?rc=IMENAAXD", cat: "tasks", desc: "New network." },
+             { name: "BlockScout", url: "https://eth.blockscout.com/?ref=6RZXK3", cat: "tasks", desc: "Explorer rewards." },
+             { name: "RewardVid", url: "https://rewardvid.com?ref=ETqLenDf", cat: "tasks", desc: "Watch videos." }
+        ];
+
+        // RENDER LOGIC
+        function renderLinks() {
+            const today = new Date().toISOString().split('T')[0];
+            let history = JSON.parse(localStorage.getItem('clickHistory')) || {};
+            
+            // Reset logic if new day
+            if(localStorage.getItem('lastDate') !== today) {
+                history = {};
+                localStorage.setItem('lastDate', today);
+                localStorage.setItem('clickHistory', JSON.stringify(history));
+            }
+
+            let totalLinks = links.length;
+            let clickedCount = 0;
+
+            links.forEach((link, index) => {
+                const isVisited = history[link.url];
+                if(isVisited) clickedCount++;
+
+                const card = document.createElement('div');
+                card.className = `glass-card rounded-xl p-4 flex flex-col justify-between relative ${isVisited ? 'visited' : ''}`;
+                card.id = `card-${index}`;
+
+                const btnClass = isVisited 
+                    ? "bg-slate-700 text-slate-400 cursor-default" 
+                    : "btn-grad text-white shadow-lg cursor-pointer";
+                
+                const statusColor = isVisited ? "bg-emerald-500 shadow-[0_0_10px_#10b981]" : "bg-rose-500 shadow-[0_0_10px_#f43f5e]";
+
+                card.innerHTML = `
+                    <div class="absolute top-4 right-4 ${statusColor} w-3 h-3 rounded-full transition-all duration-500" id="status-${index}"></div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-1 text-white">${link.name}</h4>
+                        <p class="text-xs text-slate-400 mb-4 h-8 overflow-hidden">${link.desc}</p>
+                    </div>
+                    <a href="${link.url}" target="_blank" rel="nofollow noopener" 
+                       onclick="trackClick('${link.url}', ${index})"
+                       class="w-full py-2 rounded-lg text-center font-semibold text-sm transition-all ${btnClass}">
+                       ${isVisited ? 'Visited Today' : 'Claim Now <i class="fa-solid fa-arrow-right ml-1"></i>'}
+                    </a>
+                `;
+                
+                const container = document.getElementById(`cat-${link.cat}`) || document.getElementById('cat-tasks'); // Fallback
+                if(container) container.appendChild(card);
+            });
+
+            updateProgress(clickedCount, totalLinks);
+        }
+
+        function trackClick(url, index) {
+            let history = JSON.parse(localStorage.getItem('clickHistory')) || {};
+            if (!history[url]) {
+                history[url] = true;
+                localStorage.setItem('clickHistory', JSON.stringify(history));
+                
+                // UI Update without reload
+                const card = document.getElementById(`card-${index}`);
+                const btn = card.querySelector('a');
+                const status = document.getElementById(`status-${index}`);
+                
+                card.classList.add('visited');
+                btn.className = "w-full py-2 rounded-lg text-center font-semibold text-sm transition-all bg-slate-700 text-slate-400 cursor-default";
+                btn.innerHTML = "Visited Today";
+                status.className = "absolute top-4 right-4 bg-emerald-500 shadow-[0_0_10px_#10b981] w-3 h-3 rounded-full transition-all duration-500";
+                
+                // Recalculate progress
+                let total = links.length;
+                let clicked = Object.keys(history).length;
+                updateProgress(clicked, total);
+            }
+        }
+
+        function updateProgress(clicked, total) {
+            const percent = Math.round((clicked / total) * 100);
+            const bar = document.getElementById('progressBar');
+            bar.style.width = `${percent}%`;
+        }
+
+        function resetTracker() {
+            if(confirm('Reset your daily progress?')) {
+                localStorage.removeItem('clickHistory');
+                location.reload();
+            }
+        }
+
+        // Countdown Timer to UTC Midnight
+        setInterval(() => {
+            const now = new Date();
+            const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+            const diff = tomorrow - now;
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('countdown').innerText = `${hours}h ${minutes}m`;
+        }, 60000);
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sort links alphabetically within categories (optional, but looks nicer)
+            // links.sort((a, b) => a.name.localeCompare(b.name));
+            renderLinks();
+            
+            // Initial timer set
+            const now = new Date();
+            const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+            const diff = tomorrow - now;
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('countdown').innerText = `${hours}h ${minutes}m`;
+        });
+    </script>
+</body>
+</html>
